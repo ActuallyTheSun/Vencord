@@ -126,7 +126,8 @@ export default definePlugin({
     open(message: Message) {
         const tab = {
             channelId: message.channel_id,
-            guildId: ChannelStore.getChannel(message.channel_id)?.guild_id
+            guildId: ChannelStore.getChannel(message.channel_id)?.guild_id,
+            compact: false
         };
         ChannelTabsUtils.createTab(tab, false, message.id);
     },
