@@ -26,6 +26,7 @@ import {
     Button, ChannelStore, ContextMenu, FluxDispatcher, Forms, GuildStore,
     i18n,
     Menu,
+    PresenceStore,
     ReadStateStore, Text, TypingStore,
     useEffect, useRef,
     UserStore,
@@ -72,14 +73,8 @@ const GuildIcon = ({ guild }: { guild: Guild; }) => guild.icon
         <Text variant="text-xs/semibold" tag="span">{guild.acronym}</Text>
     </div>;
 
-const UserAvatar = ({ user }: { user: User; }) =>
-    <img
-        src={user.avatar
-            ? `https://${window.GLOBAL_ENV.CDN_HOST}/avatars/${user?.id}/${user?.avatar}.png`
-            : `https://${window.GLOBAL_ENV.CDN_HOST}/embed/avatars/${parseInt(user.discriminator, 10) % 5}.png`
-        }
-        className={cl("icon")}
-    />;
+
+const Avatar = findByCodeLazy(".typingIndicatorRef", "svg");
 
 const ChannelIcon = ({ channel }: { channel: Channel; }) =>
     <img
@@ -259,8 +254,15 @@ function ChannelTabContent(props: ChannelTabsProps &
                 ? user.globalName ?? user.username
                 : user.isPomelo() ? `@${user.username}` : user.tag;
 
+            const status = settings.store.showStatusIndicators
+                ? PresenceStore.getStatus(user.id)
+                : null;
+
             return <>
-                <UserAvatar user={user} />
+                <Avatar
+                    size="SIZE_24"
+                    src={user.getAvatarURL(guildId, 128)}
+                    status={status} />
                 {!compact && <Text className={cl("channel-name-text")}>{username}</Text>}
                 <NotificationDot unreadCount={unreadCount} mentionCount={mentionCount} />
                 <TypingIndicator isTyping={isTyping} />

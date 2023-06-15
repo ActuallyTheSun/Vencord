@@ -157,5 +157,9 @@ export default definePlugin({
         </>;
     },
 
-    util: ChannelTabsUtils
+    util: ChannelTabsUtils,
+
+    flux: {
+        PRESENCE_UPDATES: ChannelTabsUtils.onPresenceUpdate
+    }
 });

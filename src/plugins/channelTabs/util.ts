@@ -68,6 +68,11 @@ export const channelTabsSettings = definePluginSettings({
         description: "Use display names instead of usernames for DM's",
         type: OptionType.BOOLEAN,
         default: false
+    },
+    showStatusIndicators: {
+        description: "Show status indicators for DM's",
+        type: OptionType.BOOLEAN,
+        default: true
     }
 });
 
@@ -306,7 +311,16 @@ function toggleCompactTab(id: number) {
     update();
 }
 
+function onPresenceUpdate({ updates }) {
+    // We could verify if we need to update the tabs by checking if
+    // `updates` includes a user who is currently displayed in a tab.
+    // However, this is likely to be more expensive than simply updating
+    // the tabs regardless.
+    update();
+}
+
 export const ChannelTabsUtils = {
     closeOtherTabs, closeTab, closeCurrentTab, closeTabsToTheRight, createTab, handleChannelSwitch, isTabSelected, moveDraggedTabs,
-    moveToTab, moveToTabRelative, openTabHistory, openTabs, saveTabs, openStartupTabs, reopenClosedTab, setUpdaterFunction, toggleCompactTab
+    moveToTab, moveToTabRelative, openTabHistory, openTabs, saveTabs, openStartupTabs, reopenClosedTab, setUpdaterFunction, toggleCompactTab,
+    onPresenceUpdate
 };
