@@ -310,6 +310,7 @@ function toggleCompactTab(id: number) {
     };
     update();
 }
+
 export const ChannelTabsUtils = {
     closeOtherTabs, closeTab, closeCurrentTab, closeTabsToTheRight, createTab, handleChannelSwitch, isTabSelected, moveDraggedTabs,
     moveToTab, moveToTabRelative, openTabHistory, openTabs, saveTabs, openStartupTabs, reopenClosedTab, setUpdaterFunction, toggleCompactTab
