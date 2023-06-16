@@ -195,13 +195,14 @@ function ChannelTabContent(props: ChannelTabsProps &
     const userId = UserStore.getCurrentUser()?.id;
     const recipients = channel?.recipients;
 
-    const [unreadCount, mentionCount, isTyping, status] = useStateFromStores(
+    const [unreadCount, mentionCount, isTyping, status, isMobile] = useStateFromStores(
         [ReadStateStore, TypingStore, PresenceStore],
         () => [
             ReadStateStore.getUnreadCount(channelId) as number,
             ReadStateStore.getMentionCount(channelId) as number,
             !!((Object.keys(TypingStore.getTypingUsers(props.channelId)) as string[]).filter(id => id !== userId).length),
-            PresenceStore.getStatus(recipients?.[0])
+            PresenceStore.getStatus(recipients?.[0]),
+            PresenceStore.isMobileOnline(recipients?.[0])
         ],
         null,
         // is this necessary?
@@ -261,6 +262,7 @@ function ChannelTabContent(props: ChannelTabsProps &
                     src={user.getAvatarURL(guildId, 128)}
                     status={settings.store.showStatusIndicators ? status : null}
                     isTyping={isTyping}
+                    isMobile={isMobile}
                 />
                 {!compact && <Text className={cl("channel-name-text")}>{username}</Text>}
                 <NotificationDot unreadCount={unreadCount} mentionCount={mentionCount} />
