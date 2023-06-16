@@ -158,8 +158,4 @@ export default definePlugin({
     },
 
     util: ChannelTabsUtils,
-
-    flux: {
-        PRESENCE_UPDATES: ChannelTabsUtils.onPresenceUpdate
-    }
 });

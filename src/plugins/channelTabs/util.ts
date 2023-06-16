@@ -310,17 +310,7 @@ function toggleCompactTab(id: number) {
     };
     update();
 }
-
-function onPresenceUpdate({ updates }) {
-    // We could verify if we need to update the tabs by checking if
-    // `updates` includes a user who is currently displayed in a tab.
-    // However, this is likely to be more expensive than simply updating
-    // the tabs regardless.
-    update();
-}
-
 export const ChannelTabsUtils = {
     closeOtherTabs, closeTab, closeCurrentTab, closeTabsToTheRight, createTab, handleChannelSwitch, isTabSelected, moveDraggedTabs,
-    moveToTab, moveToTabRelative, openTabHistory, openTabs, saveTabs, openStartupTabs, reopenClosedTab, setUpdaterFunction, toggleCompactTab,
-    onPresenceUpdate
+    moveToTab, moveToTabRelative, openTabHistory, openTabs, saveTabs, openStartupTabs, reopenClosedTab, setUpdaterFunction, toggleCompactTab
 };

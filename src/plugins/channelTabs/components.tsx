@@ -195,12 +195,13 @@ function ChannelTabContent(props: ChannelTabsProps &
     const userId = UserStore.getCurrentUser()?.id;
     const recipients = channel?.recipients;
 
-    const [unreadCount, mentionCount, isTyping] = useStateFromStores(
-        [ReadStateStore, TypingStore],
+    const [unreadCount, mentionCount, isTyping, status] = useStateFromStores(
+        [ReadStateStore, TypingStore, PresenceStore],
         () => [
             ReadStateStore.getUnreadCount(channelId) as number,
             ReadStateStore.getMentionCount(channelId) as number,
             !!((Object.keys(TypingStore.getTypingUsers(props.channelId)) as string[]).filter(id => id !== userId).length),
+            PresenceStore.getStatus(recipients?.[0])
         ],
         null,
         // is this necessary?
@@ -254,18 +255,16 @@ function ChannelTabContent(props: ChannelTabsProps &
                 ? user.globalName ?? user.username
                 : user.isPomelo() ? `@${user.username}` : user.tag;
 
-            const status = settings.store.showStatusIndicators
-                ? PresenceStore.getStatus(user.id)
-                : null;
-
             return <>
                 <Avatar
                     size="SIZE_24"
                     src={user.getAvatarURL(guildId, 128)}
-                    status={status} />
+                    status={settings.store.showStatusIndicators ? status : null}
+                    isTyping={isTyping}
+                />
                 {!compact && <Text className={cl("channel-name-text")}>{username}</Text>}
                 <NotificationDot unreadCount={unreadCount} mentionCount={mentionCount} />
-                <TypingIndicator isTyping={isTyping} />
+                {!settings.store.showStatusIndicators && <TypingIndicator isTyping={isTyping} />}
             </>;
         } else { // Group DM
             return <>
