@@ -16,9 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import NotificationDot from "@components/NotificationDot";
 import { classes } from "@utils/misc";
 import { LazyComponent } from "@utils/react.jsx";
-import { find, findByCode, findByCodeLazy, findByPropsLazy } from "@webpack";
+import { find, findByCode, findByCodeLazy } from "@webpack";
 import { Avatar, ChannelStore, GuildStore, i18n, PresenceStore, ReadStateStore, Text, TypingStore, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
 import { Channel, Guild, User } from "discord-types/general";
 
@@ -30,8 +31,6 @@ const enum ChannelTypes {
     DM = 1,
     GROUP_DM = 3
 }
-const getDotWidth = findByCodeLazy("<10?16:");
-const dotStyles = findByPropsLazy("numberBadge");
 const useEmojiBackgroundColor: (emoji: string, channelId: string) => string = findByCodeLazy("themeColor:null==");
 
 const Emoji = LazyComponent(() => findByCode(".autoplay,allowAnimatedEmoji:"));
@@ -66,20 +65,6 @@ function TypingIndicator({ isTyping }: { isTyping: boolean; }) {
         ? <div className={cl("typing-indicator")}><ThreeDots dotRadius={3} themed={true} /></div>
         : null;
 }
-
-const NotificationDot = ({ unreadCount, mentionCount }: { unreadCount: number, mentionCount: number; }) => {
-    return unreadCount > 0 ?
-        <div
-            data-has-mention={!!mentionCount}
-            className={classes(dotStyles.numberBadge, dotStyles.baseShapeRound)}
-            style={{
-                backgroundColor: mentionCount ? "var(--status-danger)" : "var(--brand-experiment)",
-                width: getDotWidth(mentionCount || unreadCount)
-            }}
-        >
-            {mentionCount || unreadCount}
-        </div> : null;
-};
 
 function ChannelEmoji({ channel }: {
     channel: Channel & {
