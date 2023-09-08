@@ -16,9 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import NotificationDot from "@components/NotificationDot";
 import { LazyComponent } from "@utils/react";
 import { findByCode } from "@webpack";
-import { Avatar, ChannelStore, ContextMenu, GuildStore, showToast, Text, useDrag, useDrop, useRef, UserStore } from "@webpack/common";
+import { Avatar, ChannelStore, ContextMenu, GuildStore, ReadStateStore, showToast, Text, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
 
 import { BasicChannelTabsProps, Bookmark, BookmarkFolder, Bookmarks, ChannelTabsUtils, UseBookmark } from "../util";
 import { QuestionIcon } from "./ChannelTab";
@@ -69,6 +70,24 @@ function Bookmark({ bookmarks, index, methods }: { bookmarks: Bookmarks, index: 
     const bookmark = bookmarks[index];
 
     const ref = useRef<HTMLDivElement>(null);
+
+    let unreadCount, mentionCount;
+    if (!("bookmarks" in bookmark)) { // Not a folder
+        const channel = ChannelStore.getChannel(bookmark.channelId);
+
+        [unreadCount, mentionCount] = useStateFromStores(
+            [ReadStateStore],
+            () => [
+                ReadStateStore.getUnreadCount(channel.id) as number,
+                ReadStateStore.getMentionCount(channel.id) as number,
+            ],
+            null,
+            // is this necessary?
+            (o, n) => o.every((v, i) => v === n[i])
+        );
+    }
+
+
     const [, drag] = useDrag(() => ({
         type: "vc_Bookmark",
         item: () => {
@@ -78,6 +97,7 @@ function Bookmark({ bookmarks, index, methods }: { bookmarks: Bookmarks, index: 
             isDragging: !!monitor.isDragging()
         }),
     }));
+
     const [, drop] = useDrop(() => ({
         accept: "vc_Bookmark",
         hover: (item, monitor) => {
@@ -116,6 +136,7 @@ function Bookmark({ bookmarks, index, methods }: { bookmarks: Bookmarks, index: 
     >
         <BookmarkIcon bookmark={bookmark} />
         <Text variant="text-sm/normal" className={cl("name-text")}>{bookmark.name}</Text>
+        {!("bookmarks" in bookmark) && <NotificationDot unreadCount={unreadCount} mentionCount={mentionCount} />}
     </div>;
 }
 
