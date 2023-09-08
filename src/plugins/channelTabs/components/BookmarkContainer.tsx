@@ -16,13 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import NotificationDot from "@components/NotificationDot";
 import { LazyComponent } from "@utils/react";
 import { findByCode } from "@webpack";
 import { Avatar, ChannelStore, ContextMenu, GuildStore, ReadStateStore, showToast, Text, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
 
 import { BasicChannelTabsProps, Bookmark, BookmarkFolder, Bookmarks, ChannelTabsUtils, UseBookmark } from "../util";
-import { QuestionIcon } from "./ChannelTab";
+import { NotificationDot, QuestionIcon } from "./ChannelTab";
 import { BookmarkContextMenu } from "./ContextMenus";
 
 const { switchChannel, useBookmarks } = ChannelTabsUtils;
