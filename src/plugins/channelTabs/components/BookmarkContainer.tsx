@@ -18,7 +18,7 @@
 
 import { LazyComponent } from "@utils/react";
 import { findByCode } from "@webpack";
-import { Avatar, ChannelStore, ContextMenu, FluxDispatcher, GuildStore, Menu, ReadStateStore, showToast, Text, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
+import { Avatar, ChannelStore, ContextMenu, FluxDispatcher, GuildStore, Menu, ReadStateStore, Text, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
 
 import { BasicChannelTabsProps, Bookmark, BookmarkFolder, Bookmarks, ChannelTabsUtils, UseBookmark } from "../util";
 import { NotificationDot, QuestionIcon } from "./ChannelTab";
@@ -84,28 +84,28 @@ function BookmarkFolderOpenMenu(props: { bookmarks: Bookmarks, index: number, me
     </Menu.Menu>;
 }
 
+function getNotificationsForBookmark(bookmark: Bookmark | BookmarkFolder): [number, number] {
+    const channel = !("bookmarks" in bookmark) ? ChannelStore.getChannel(bookmark.channelId) : null;
+
+    return useStateFromStores(
+        [ReadStateStore],
+        () => [
+            ReadStateStore.getUnreadCount(channel?.id) as number,
+            ReadStateStore.getMentionCount(channel?.id) as number,
+        ],
+        null,
+        // is this necessary?
+        (o, n) => o.every((v, i) => v === n[i])
+    );
+}
+
 function Bookmark(props: { bookmarks: Bookmarks, index: number, methods: UseBookmark[1]; }) {
     const { bookmarks, index, methods } = props;
     const bookmark = bookmarks[index];
 
     const ref = useRef<HTMLDivElement>(null);
 
-    let unreadCount, mentionCount;
-    if (!("bookmarks" in bookmark)) { // Not a folder
-        const channel = ChannelStore.getChannel(bookmark.channelId);
-
-        [unreadCount, mentionCount] = useStateFromStores(
-            [ReadStateStore],
-            () => [
-                ReadStateStore.getUnreadCount(channel.id) as number,
-                ReadStateStore.getMentionCount(channel.id) as number,
-            ],
-            null,
-            // is this necessary?
-            (o, n) => o.every((v, i) => v === n[i])
-        );
-    }
-
+    const [unreadCount, mentionCount] = getNotificationsForBookmark(bookmark);
 
     const [, drag] = useDrag(() => ({
         type: "vc_Bookmark",
