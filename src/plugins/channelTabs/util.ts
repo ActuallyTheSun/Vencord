@@ -114,7 +114,12 @@ export const channelTabsSettings = definePluginSettings({
         description: "",
         type: OptionType.BOOLEAN,
         default: true
-    }
+    },
+    showNotificationIndicatorsOnBookmarks: {
+        description: "",
+        type: OptionType.BOOLEAN,
+        default: true
+    },
 });
 
 function replaceArray<T>(array: T[], ...values: T[]) {

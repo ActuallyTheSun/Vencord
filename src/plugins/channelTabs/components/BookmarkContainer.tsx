@@ -20,7 +20,7 @@ import { LazyComponent } from "@utils/react";
 import { findByCode } from "@webpack";
 import { Avatar, ChannelStore, ContextMenu, FluxDispatcher, GuildStore, Menu, ReadStateStore, Text, useDrag, useDrop, useRef, UserStore, useStateFromStores } from "@webpack/common";
 
-import { BasicChannelTabsProps, Bookmark, BookmarkFolder, Bookmarks, ChannelTabsUtils, UseBookmark } from "../util";
+import { BasicChannelTabsProps, Bookmark, BookmarkFolder, Bookmarks, channelTabsSettings, ChannelTabsUtils, UseBookmark } from "../util";
 import { NotificationDot, QuestionIcon } from "./ChannelTab";
 import { BookmarkContextMenu } from "./ContextMenus";
 
@@ -85,7 +85,7 @@ function BookmarkFolderOpenMenu(props: { bookmarks: Bookmarks, index: number, me
 }
 
 function getNotificationsForBookmark(bookmark: Bookmark | BookmarkFolder): [number, number] {
-    const channel = !("bookmarks" in bookmark) ? ChannelStore.getChannel(bookmark.channelId) : null;
+    const channel = (!("bookmarks" in bookmark) && channelTabsSettings.store.showNotificationIndicatorsOnBookmarks) ? ChannelStore.getChannel(bookmark.channelId) : null;
 
     return useStateFromStores(
         [ReadStateStore],
